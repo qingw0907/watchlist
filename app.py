@@ -150,9 +150,9 @@ def edit(movie_id):
 	if request.method == 'POST':
 		title = request.form['title']
 		year = request.form['year']
-		if not title or not year or len(title) > 60 or len(year) > 4:
+		if not title or not year or len(title) > 60 or len(year) != 4:
 			flash('Invalid input.')
-			redirect(url_for('edit', movie_id=movie_id))
+			return redirect(url_for('edit', movie_id=movie_id))
 		movie.year = year
 		movie.title = title
 		db.session.commit()
@@ -175,12 +175,13 @@ def settings():
 	if request.method == 'POST':
 		name = request.form['name']
 		if not name or len(name) > 20:
+			flash('Invalid input.')
 			return redirect(url_for('settings'))
 		current_user.name = name
 		user = User.query.first()
 		user.name = name
 		db.session.commit()
-		flash('Setting updated.')
+		flash('Settings updated.')
 		return redirect(url_for('index'))
 
 	return render_template('settings.html')
